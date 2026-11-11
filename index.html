@@ -1,0 +1,983 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>tk accelis Materials Hungary Zrt. | Mobil Acélkatalógus & Súlykalibrátor</title>
+    <style>
+        :root {
+            --tk-deep-green: #0a2923;
+            --tk-dark-surface: #0e352e;
+            --tk-active-green: #4afb86;
+            --tk-accent-orange: #ff8e14;
+            --tk-warm-white: #f2ede7;
+            --tk-warm-muted: #b8c4bf;
+            --tk-border: #1d5248;
+            --tk-slot-bg: #071e19;
+            --tk-bg: #061814;
+        }
+
+        * { box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+        body { background-color: var(--tk-bg); color: var(--tk-warm-white); margin: 0; padding: 10px; }
+        
+        .wrapper {
+            max-width: 600px;
+            margin: 0 auto;
+            background: var(--tk-deep-green);
+            border-radius: 16px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.7);
+            overflow: hidden;
+            border: 1px solid var(--tk-border);
+            border-top: 6px solid var(--tk-active-green);
+        }
+
+        header {
+            background: linear-gradient(180deg, #07221d 0%, #0a2923 100%);
+            padding: 18px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--tk-border);
+        }
+
+        .content { padding: 16px; }
+
+        .group-tabs {
+            display: flex;
+            gap: 6px;
+            overflow-x: auto;
+            padding-bottom: 8px;
+            margin-bottom: 10px;
+            scrollbar-width: none;
+        }
+        .group-tabs::-webkit-scrollbar { display: none; }
+
+        .sub-tabs {
+            display: flex;
+            gap: 6px;
+            overflow-x: auto;
+            padding-bottom: 10px;
+            margin-bottom: 14px;
+            border-bottom: 1px solid var(--tk-border);
+            scrollbar-width: none;
+        }
+        .sub-tabs::-webkit-scrollbar { display: none; }
+
+        .group-btn, .tab-btn {
+            background: #061e19;
+            border: 1.5px solid var(--tk-border);
+            padding: 8px 14px;
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--tk-warm-white);
+            border-radius: 8px;
+            white-space: nowrap;
+            cursor: pointer;
+        }
+
+        .group-btn.active, .tab-btn.active {
+            background: var(--tk-active-green);
+            color: #061814;
+            border-color: var(--tk-active-green);
+            box-shadow: 0 4px 12px rgba(74, 251, 134, 0.3);
+        }
+
+        .slide-rule-device {
+            background: #08211c;
+            border: 1.5px solid var(--tk-border);
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 20px;
+        }
+
+        .slider-bar-container {
+            background: var(--tk-dark-surface);
+            padding: 14px;
+            border-radius: 10px;
+            border: 1px solid var(--tk-border);
+            margin-bottom: 16px;
+        }
+
+        .slider-range-input {
+            width: 100%;
+            height: 10px;
+            border-radius: 5px;
+            background: #14453c;
+            outline: none;
+            -webkit-appearance: none;
+            cursor: pointer;
+            margin: 12px 0;
+        }
+
+        .slider-range-input::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background: var(--tk-active-green);
+            border: 3px solid #061814;
+            box-shadow: 0 0 12px rgba(74, 251, 134, 0.7);
+        }
+
+        .drawing-box {
+            background: var(--tk-dark-surface);
+            border: 1px solid var(--tk-border);
+            border-radius: 10px;
+            padding: 12px;
+            text-align: center;
+            margin-bottom: 14px;
+        }
+
+        .svg-container {
+            width: 100%;
+            height: 160px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #071f1a;
+            border-radius: 8px;
+            border: 1px solid #143d34;
+        }
+
+        .slots-panel {
+            background: var(--tk-dark-surface);
+            border: 1px solid var(--tk-border);
+            border-radius: 10px;
+            padding: 14px;
+            margin-bottom: 14px;
+        }
+
+        .slot-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .slot-item {
+            background: #09241f;
+            border: 1px solid var(--tk-border);
+            border-radius: 8px;
+            padding: 10px;
+        }
+
+        .cutout-window {
+            background: var(--tk-slot-bg);
+            border: 1.5px solid #286357;
+            padding: 6px 8px;
+            border-radius: 6px;
+            font-size: 15px;
+            font-weight: 800;
+            color: var(--tk-active-green);
+            text-align: right;
+            margin-top: 4px;
+        }
+
+        .highlight-card {
+            background: linear-gradient(180deg, #0e352e 0%, #092621 100%);
+            border: 2px solid var(--tk-active-green);
+            border-radius: 10px;
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .highlight-box {
+            text-align: center;
+            padding: 12px;
+            border-radius: 8px;
+            background: #071f1a;
+            border: 1px solid var(--tk-border);
+        }
+
+        .highlight-box.primary-weight {
+            background: linear-gradient(135deg, #0d3830 0%, #154c42 100%);
+            border: 1.5px solid var(--tk-active-green);
+        }
+
+        .table-responsive {
+            overflow-x: auto;
+            border: 1px solid var(--tk-border);
+            border-radius: 8px;
+            background: var(--tk-dark-surface);
+            max-height: 320px;
+            margin-top: 14px;
+        }
+
+        table { width: 100%; border-collapse: collapse; font-size: 12px; text-align: left; white-space: nowrap; }
+        th { position: sticky; top: 0; background: #07221d; color: var(--tk-active-green); padding: 10px; border-bottom: 1.5px solid var(--tk-border); }
+        td { padding: 9px 10px; border-bottom: 1px solid #144036; color: var(--tk-warm-white); }
+        tr:hover td { background-color: #12433a; }
+
+        .lang-switch { display: flex; border: 1px solid var(--tk-border); border-radius: 6px; overflow: hidden; }
+        .lang-switch button {
+            background: #061e19; color: var(--tk-warm-muted); border: none; padding: 4px 9px;
+            font-size: 10px; font-weight: 800; cursor: pointer;
+        }
+        .lang-switch button + button { border-left: 1px solid var(--tk-border); }
+        .lang-switch button.active { background: var(--tk-active-green); color: #061814; }
+
+        footer {
+            background: #051411;
+            color: var(--tk-warm-muted);
+            padding: 14px 16px;
+            font-size: 11px;
+            text-align: center;
+            border-top: 1px solid var(--tk-border);
+        }
+    </style>
+</head>
+<body>
+
+<div class="wrapper">
+    <header>
+        <div>
+            <div style="font-size: 16px; font-weight: 900; color: var(--tk-active-green);">tk accelis Materials</div>
+            <div style="font-size: 11px; color: var(--tk-warm-muted);" data-i18n="subtitle">Mobil Súlykalibrátor</div>
+        </div>
+        <div style="display: flex; flex-direction: column; align-items: flex-end; gap: 6px;">
+            <div style="font-size: 10px; background: rgba(74,251,134,0.15); color: var(--tk-active-green); border: 1px solid rgba(74,251,134,0.3); padding: 4px 10px; border-radius: 6px; font-weight: 750;" data-i18n="badge">PRO mobil verzió</div>
+            <div class="lang-switch" id="langSwitch">
+                <button data-lang="hu">HU</button><button data-lang="de">DE</button><button data-lang="en">EN</button>
+            </div>
+        </div>
+    </header>
+
+    <div class="content">
+        <!-- Főcsoport fülek -->
+        <div class="group-tabs" id="groupTabs"></div>
+        <div class="sub-tabs" id="subTabs"></div>
+
+        <!-- Csúszkás Kalkulátor -->
+        <div class="slide-rule-device">
+            <div style="margin-bottom: 10px; border-bottom: 1px solid var(--tk-border); padding-bottom: 8px;">
+                <div style="font-size: 15px; font-weight: 800;" id="devProfileName">UNP Melegen Hengerelt U-Acél</div>
+                <span style="background: rgba(74,251,134,0.12); padding: 2px 8px; font-size: 10px; color: var(--tk-active-green); border: 1px solid rgba(74,251,134,0.3); border-radius: 4px;" id="devStandard">DIN 1026 T1</span>
+            </div>
+
+            <!-- Csúszka -->
+            <div class="slider-bar-container">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+                    <span style="font-size: 11px; font-weight: 700; color: var(--tk-warm-muted);" data-i18n="sizeSelector">Méretválasztó:</span>
+                    <span style="background: var(--tk-active-green); color: #061814; font-size: 12px; font-weight: 800; padding: 2px 10px; border-radius: 12px;" id="sliderCurrentLabel">UNP 120</span>
+                </div>
+                <input type="range" id="profileSlider" class="slider-range-input" min="0" max="0" value="0" oninput="onSliderMove(this.value)">
+                <div style="display: flex; justify-content: space-between; font-size: 10px; color: var(--tk-warm-muted); overflow-x: auto; gap: 4px;" id="sliderTicks"></div>
+            </div>
+
+            <!-- Rajz -->
+            <div class="drawing-box">
+                <div class="svg-container" id="svgHolder"></div>
+                <div style="font-size: 10px; color: var(--tk-warm-muted); margin-top: 6px;" id="svgCaption"></div>
+            </div>
+
+            <!-- Ablakok -->
+            <div class="slots-panel">
+                <h4 style="margin: 0 0 10px 0; font-size: 10px; text-transform: uppercase; color: var(--tk-active-green); border-bottom: 1px solid var(--tk-border); padding-bottom: 6px;" data-i18n="dimensions">Méretek (Ablakok)</h4>
+                <div class="slot-grid" id="slotsGrid"></div>
+            </div>
+
+            <!-- Súly & Mennyiség -->
+            <div class="highlight-card">
+                <div class="highlight-box primary-weight">
+                    <div style="font-size: 10px; font-weight: 700; text-transform: uppercase; color: var(--tk-active-green); margin-bottom: 2px;" id="unitWeightLabel" data-i18n="weight">Kereskedelmi Súly</div>
+                    <div style="font-size: 24px; font-weight: 900; color: #ffffff;" id="weightDisplay">13,4 <span style="font-size: 13px; font-weight: normal; color: var(--tk-active-green);">kg/m</span></div>
+                </div>
+                <div class="highlight-box">
+                    <div style="font-size: 10px; font-weight: 700; text-transform: uppercase; color: var(--tk-warm-muted); margin-bottom: 2px;" id="secondMetricLabel">Keresztmetszet (F)</div>
+                    <div style="font-size: 18px; font-weight: 800; color: var(--tk-active-green);" id="areaDisplay">17,0 <span style="font-size: 11px; font-weight: normal; color: var(--tk-warm-muted);">cm²</span></div>
+                </div>
+                <div>
+                    <label for="lengthInput" style="font-size: 10px; font-weight: 700; display: block; margin-bottom: 3px;" id="calcQtyLabel">Szálhossz (méter):</label>
+                    <input type="number" id="lengthInput" value="6.0" step="0.5" min="0.1" style="width: 100%; padding: 8px; background: #061814; border: 1.5px solid var(--tk-border); border-radius: 6px; font-size: 14px; font-weight: 700; color: var(--tk-active-green); outline: none;" oninput="calculateSubtotal()">
+                    <div style="font-size: 12px; font-weight: 700; margin-top: 6px; text-align: right;">
+                        <span data-i18n="total">Össztömeg:</span> <span id="subtotalWeight" style="color: var(--tk-accent-orange); font-size: 14px;">80,40 kg</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Adatbázis kereső -->
+        <div>
+            <div style="display: flex; justify-content: space-between; align-items: center; gap: 8px; margin-bottom: 8px;">
+                <h3 style="margin: 0; font-size: 13px; font-weight: 700;" data-i18n="database">Adatbázis</h3>
+                <input type="text" id="dbSearch" placeholder="Keresés..." data-i18n-ph="search" style="padding: 6px 10px; font-size: 11px; background: var(--tk-dark-surface); color: var(--tk-warm-white); border: 1px solid var(--tk-border); border-radius: 6px; outline: none; width: 150px;" onkeyup="filterMasterTable()">
+            </div>
+            <div class="table-responsive">
+                <table id="masterDbTable">
+                    <thead>
+                        <tr>
+                            <th data-i18n="thGroup">Főcsoport</th>
+                            <th data-i18n="thProduct">Termék</th>
+                            <th data-i18n="thStandard">Szabvány</th>
+                            <th data-i18n="thSize">Méret</th>
+                            <th data-i18n="thWeight">Súly</th>
+                        </tr>
+                    </thead>
+                    <tbody id="masterTableBody"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        &copy; 2026 tk accelis Materials Hungary Zrt. • Moving industries - from source to success
+    </footer>
+</div>
+
+<script>
+    const catalogData = {
+        "tartok": {
+            groupName: "Tartó",
+            subProfiles: {
+                unp: {
+                    tabLabel: "UNP U-Acél",
+                    name: "UNP Melegen hengerelt U-acél (lejtős övű)",
+                    standard: "DIN 1026 T1",
+                    type: "UNP",
+                    unit: "kg/m",
+                    qtyLabel: "Szálhossz (méter):",
+                    defaultQty: 6.0,
+                    fields: [
+                        { key: 'h', label: 'Magasság (h)', unit: 'mm' },
+                        { key: 'b', label: 'Talpszélesség (b)', unit: 'mm' },
+                        { key: 's', label: 'Gerincvastagság (s)', unit: 'mm' },
+                        { key: 't', label: 'Talpvastagság (t)', unit: 'mm' }
+                    ],
+                    items: [
+                        { code: "UNP 80", h: 80, b: 45, s: 6.0, t: 8.0, F: 11.0, weight: 8.64 },
+                        { code: "UNP 100", h: 100, b: 50, s: 6.0, t: 8.5, F: 13.5, weight: 10.60 },
+                        { code: "UNP 120", h: 120, b: 55, s: 7.0, t: 9.0, F: 17.0, weight: 13.40 },
+                        { code: "UNP 140", h: 140, b: 60, s: 7.0, t: 10.0, F: 20.4, weight: 16.00 },
+                        { code: "UNP 160", h: 160, b: 65, s: 7.5, t: 10.5, F: 24.0, weight: 18.80 },
+                        { code: "UNP 180", h: 180, b: 70, s: 8.0, t: 11.0, F: 28.0, weight: 22.00 },
+                        { code: "UNP 200", h: 200, b: 75, s: 8.5, t: 11.5, F: 32.2, weight: 25.30 },
+                        { code: "UNP 220", h: 220, b: 80, s: 9.0, t: 12.5, F: 37.4, weight: 29.40 },
+                        { code: "UNP 240", h: 240, b: 85, s: 9.5, t: 13.0, F: 42.3, weight: 33.20 },
+                        { code: "UNP 260", h: 260, b: 90, s: 10.0, t: 14.0, F: 48.3, weight: 37.90 },
+                        { code: "UNP 280", h: 280, b: 95, s: 10.0, t: 15.0, F: 53.3, weight: 41.80 },
+                        { code: "UNP 300", h: 300, b: 100, s: 10.0, t: 16.0, F: 58.8, weight: 46.20 }
+                    ]
+                },
+                inp: {
+                    tabLabel: "INP Tartó",
+                    name: "INP Keskeny, lejtős övű I-tartó",
+                    standard: "DIN 1025 T1",
+                    type: "INP",
+                    unit: "kg/m",
+                    qtyLabel: "Szálhossz (méter):",
+                    defaultQty: 12.0,
+                    fields: [
+                        { key: 'h', label: 'Magasság (h)', unit: 'mm' },
+                        { key: 'b', label: 'Talpszélesség (b)', unit: 'mm' },
+                        { key: 's', label: 'Gerincvastagság (s)', unit: 'mm' },
+                        { key: 't', label: 'Talpvastagság (t)', unit: 'mm' }
+                    ],
+                    items: [
+                        { code: "INP 80", h: 80, b: 42, s: 3.9, t: 5.9, F: 7.57, weight: 5.94 },
+                        { code: "INP 100", h: 100, b: 50, s: 4.5, t: 6.8, F: 10.6, weight: 8.34 },
+                        { code: "INP 120", h: 120, b: 58, s: 5.1, t: 7.7, F: 14.2, weight: 11.1 },
+                        { code: "INP 140", h: 140, b: 66, s: 5.7, t: 8.6, F: 18.2, weight: 14.3 },
+                        { code: "INP 160", h: 160, b: 74, s: 6.3, t: 9.5, F: 22.8, weight: 17.9 },
+                        { code: "INP 180", h: 180, b: 82, s: 6.9, t: 10.4, F: 27.9, weight: 21.9 },
+                        { code: "INP 200", h: 200, b: 90, s: 7.5, t: 11.3, F: 33.4, weight: 26.2 },
+                        { code: "INP 220", h: 220, b: 98, s: 8.1, t: 12.2, F: 39.5, weight: 31.1 },
+                        { code: "INP 240", h: 240, b: 106, s: 8.7, t: 13.1, F: 46.1, weight: 36.2 },
+                        { code: "INP 260", h: 260, b: 113, s: 9.4, t: 14.1, F: 53.3, weight: 41.9 },
+                        { code: "INP 280", h: 280, b: 119, s: 10.1, t: 15.2, F: 61.0, weight: 47.9 },
+                        { code: "INP 300", h: 300, b: 125, s: 10.8, t: 16.2, F: 69.0, weight: 54.2 }
+                    ]
+                },
+                ipe: {
+                    tabLabel: "IPE Tartó",
+                    name: "IPE Párhuzamos övű I-tartó",
+                    standard: "DIN 1025 T5",
+                    type: "I",
+                    unit: "kg/m",
+                    qtyLabel: "Szálhossz (méter):",
+                    defaultQty: 12.0,
+                    fields: [
+                        { key: 'h', label: 'Magasság (h)', unit: 'mm' },
+                        { key: 'b', label: 'Talpszélesség (b)', unit: 'mm' },
+                        { key: 's', label: 'Gerincvastagság (s)', unit: 'mm' },
+                        { key: 't', label: 'Talpvastagság (t)', unit: 'mm' }
+                    ],
+                    items: [
+                        { code: "IPE 80", h: 80, b: 46, s: 3.8, t: 5.2, F: 7.64, weight: 6.0 },
+                        { code: "IPE 100", h: 100, b: 55, s: 4.1, t: 5.7, F: 10.3, weight: 8.1 },
+                        { code: "IPE 120", h: 120, b: 64, s: 4.4, t: 6.3, F: 13.2, weight: 10.4 },
+                        { code: "IPE 140", h: 140, b: 73, s: 4.7, t: 6.9, F: 16.4, weight: 12.9 },
+                        { code: "IPE 160", h: 160, b: 82, s: 5.0, t: 7.4, F: 20.1, weight: 15.8 },
+                        { code: "IPE 180", h: 180, b: 91, s: 5.3, t: 8.0, F: 23.9, weight: 18.8 },
+                        { code: "IPE 200", h: 200, b: 100, s: 5.6, t: 8.5, F: 28.5, weight: 22.4 },
+                        { code: "IPE 220", h: 220, b: 110, s: 5.9, t: 9.2, F: 33.4, weight: 26.2 },
+                        { code: "IPE 240", h: 240, b: 120, s: 6.2, t: 9.8, F: 39.1, weight: 30.7 },
+                        { code: "IPE 270", h: 270, b: 135, s: 6.6, t: 10.2, F: 45.9, weight: 36.1 },
+                        { code: "IPE 300", h: 300, b: 150, s: 7.1, t: 10.7, F: 53.8, weight: 42.2 },
+                        { code: "IPE 330", h: 330, b: 160, s: 7.5, t: 11.5, F: 62.6, weight: 49.1 },
+                        { code: "IPE 360", h: 360, b: 170, s: 8.0, t: 12.7, F: 72.7, weight: 57.1 },
+                        { code: "IPE 400", h: 400, b: 180, s: 8.6, t: 13.5, F: 84.5, weight: 66.3 }
+                    ]
+                },
+                hea: {
+                    tabLabel: "HEA Tartó",
+                    name: "HEA Széleskarimájú gerenda (könnyített)",
+                    standard: "DIN 1025 T3",
+                    type: "I",
+                    unit: "kg/m",
+                    qtyLabel: "Szálhossz (méter):",
+                    defaultQty: 12.0,
+                    fields: [
+                        { key: 'h', label: 'Magasság (h)', unit: 'mm' },
+                        { key: 'b', label: 'Talpszélesség (b)', unit: 'mm' },
+                        { key: 's', label: 'Gerincvastagság (s)', unit: 'mm' },
+                        { key: 't', label: 'Talpvastagság (t)', unit: 'mm' }
+                    ],
+                    items: [
+                        { code: "HEA 100", h: 96, b: 100, s: 5.0, t: 8.0, F: 21.2, weight: 16.7 },
+                        { code: "HEA 120", h: 114, b: 120, s: 5.0, t: 8.0, F: 25.3, weight: 19.9 },
+                        { code: "HEA 140", h: 133, b: 140, s: 5.5, t: 8.5, F: 31.4, weight: 24.7 },
+                        { code: "HEA 160", h: 152, b: 160, s: 6.0, t: 9.0, F: 38.8, weight: 30.4 },
+                        { code: "HEA 180", h: 171, b: 180, s: 6.0, t: 9.5, F: 45.3, weight: 35.5 },
+                        { code: "HEA 200", h: 190, b: 200, s: 6.5, t: 10.0, F: 53.8, weight: 42.3 },
+                        { code: "HEA 220", h: 210, b: 220, s: 7.0, t: 11.0, F: 64.3, weight: 50.5 },
+                        { code: "HEA 240", h: 230, b: 240, s: 7.5, t: 12.0, F: 76.8, weight: 60.3 },
+                        { code: "HEA 260", h: 250, b: 260, s: 7.5, t: 12.5, F: 86.8, weight: 68.2 },
+                        { code: "HEA 280", h: 270, b: 280, s: 8.0, t: 13.0, F: 97.3, weight: 76.4 },
+                        { code: "HEA 300", h: 290, b: 300, s: 8.5, t: 14.0, F: 112.5, weight: 88.3 }
+                    ]
+                },
+                heb: {
+                    tabLabel: "HEB Tartó",
+                    name: "HEB Széleskarimájú gerenda (normál)",
+                    standard: "DIN 1025 T2",
+                    type: "I",
+                    unit: "kg/m",
+                    qtyLabel: "Szálhossz (méter):",
+                    defaultQty: 12.0,
+                    fields: [
+                        { key: 'h', label: 'Magasság (h)', unit: 'mm' },
+                        { key: 'b', label: 'Talpszélesség (b)', unit: 'mm' },
+                        { key: 's', label: 'Gerincvastagság (s)', unit: 'mm' },
+                        { key: 't', label: 'Talpvastagság (t)', unit: 'mm' }
+                    ],
+                    items: [
+                        { code: "HEB 100", h: 100, b: 100, s: 6.0, t: 10.0, F: 26.0, weight: 20.4 },
+                        { code: "HEB 120", h: 120, b: 120, s: 6.5, t: 11.0, F: 34.0, weight: 26.7 },
+                        { code: "HEB 140", h: 140, b: 140, s: 7.0, t: 12.0, F: 43.0, weight: 33.7 },
+                        { code: "HEB 160", h: 160, b: 160, s: 8.0, t: 13.0, F: 54.3, weight: 42.6 },
+                        { code: "HEB 180", h: 180, b: 180, s: 8.5, t: 14.0, F: 65.3, weight: 51.2 },
+                        { code: "HEB 200", h: 200, b: 200, s: 9.0, t: 15.0, F: 78.1, weight: 61.3 },
+                        { code: "HEB 220", h: 220, b: 220, s: 9.5, t: 16.0, F: 91.0, weight: 71.5 },
+                        { code: "HEB 240", h: 240, b: 240, s: 10.0, t: 17.0, F: 106.0, weight: 83.2 },
+                        { code: "HEB 260", h: 260, b: 260, s: 10.0, t: 17.5, F: 118.4, weight: 93.0 },
+                        { code: "HEB 280", h: 280, b: 280, s: 10.5, t: 18.0, F: 131.4, weight: 103.0 },
+                        { code: "HEB 300", h: 300, b: 300, s: 11.0, t: 19.0, F: 149.1, weight: 117.0 }
+                    ]
+                },
+                hem: {
+                    tabLabel: "HEM Tartó",
+                    name: "HEM Széleskarimájú gerenda (erősített)",
+                    standard: "DIN 1025 T4",
+                    type: "I",
+                    unit: "kg/m",
+                    qtyLabel: "Szálhossz (méter):",
+                    defaultQty: 12.0,
+                    fields: [
+                        { key: 'h', label: 'Magasság (h)', unit: 'mm' },
+                        { key: 'b', label: 'Talpszélesség (b)', unit: 'mm' },
+                        { key: 's', label: 'Gerincvastagság (s)', unit: 'mm' },
+                        { key: 't', label: 'Talpvastagság (t)', unit: 'mm' }
+                    ],
+                    items: [
+                        { code: "HEM 100", h: 120, b: 106, s: 12.0, t: 20.0, F: 53.2, weight: 41.8 },
+                        { code: "HEM 120", h: 140, b: 126, s: 12.5, t: 21.0, F: 66.4, weight: 52.1 },
+                        { code: "HEM 140", h: 160, b: 146, s: 13.0, t: 22.0, F: 80.6, weight: 63.2 },
+                        { code: "HEM 160", h: 180, b: 166, s: 14.0, t: 23.0, F: 97.1, weight: 76.2 },
+                        { code: "HEM 180", h: 200, b: 186, s: 14.5, t: 24.0, F: 113.3, weight: 88.9 },
+                        { code: "HEM 200", h: 220, b: 206, s: 15.0, t: 25.0, F: 131.3, weight: 103.0 },
+                        { code: "HEM 220", h: 240, b: 226, s: 15.5, t: 26.0, F: 149.4, weight: 117.0 },
+                        { code: "HEM 240", h: 270, b: 248, s: 18.0, t: 32.0, F: 199.6, weight: 157.0 },
+                        { code: "HEM 260", h: 290, b: 268, s: 18.0, t: 32.5, F: 219.6, weight: 172.0 },
+                        { code: "HEM 280", h: 310, b: 288, s: 18.5, t: 33.0, F: 240.2, weight: 189.0 },
+                        { code: "HEM 300", h: 340, b: 310, s: 21.0, t: 39.0, F: 303.1, weight: 238.0 }
+                    ]
+                }
+            }
+        },
+        "rudak": {
+            groupName: "Rúd",
+            subProfiles: {
+                kor: {
+                    tabLabel: "Köracél",
+                    name: "Melegen hengerelt köracél",
+                    standard: "DIN 1013",
+                    type: "RS",
+                    unit: "kg/m",
+                    qtyLabel: "Szálhossz (méter):",
+                    defaultQty: 6.0,
+                    fields: [
+                        { key: 'd', label: 'Átmérő (d)', unit: 'mm' },
+                        { key: 'F', label: 'Keresztmetszet (F)', unit: 'cm²' }
+                    ],
+                    items: [
+                        { code: "Kör d=10 mm", d: 10, F: 0.78, weight: 0.62 },
+                        { code: "Kör d=12 mm", d: 12, F: 1.13, weight: 0.89 },
+                        { code: "Kör d=16 mm", d: 16, F: 2.01, weight: 1.58 },
+                        { code: "Kör d=20 mm", d: 20, F: 3.14, weight: 2.47 },
+                        { code: "Kör d=25 mm", d: 25, F: 4.91, weight: 3.85 },
+                        { code: "Kör d=30 mm", d: 30, F: 7.07, weight: 5.55 }
+                    ]
+                },
+                lapos: {
+                    tabLabel: "Laposacél",
+                    name: "Melegen hengerelt laposacél",
+                    standard: "DIN 1017",
+                    type: "FLAT",
+                    unit: "kg/m",
+                    qtyLabel: "Szálhossz (méter):",
+                    defaultQty: 6.0,
+                    fields: [
+                        { key: 'a', label: 'Szélesség (a)', unit: 'mm' },
+                        { key: 'b', label: 'Vastagság (b)', unit: 'mm' },
+                        { key: 'F', label: 'Keresztmetszet (F)', unit: 'cm²' }
+                    ],
+                    items: [
+                        { code: "Lapos 20 x 5 mm", a: 20, b: 5, F: 1.0, weight: 0.78 },
+                        { code: "Lapos 30 x 10 mm", a: 30, b: 10, F: 3.0, weight: 2.35 },
+                        { code: "Lapos 40 x 10 mm", a: 40, b: 10, F: 4.0, weight: 3.14 },
+                        { code: "Lapos 50 x 10 mm", a: 50, b: 10, F: 5.0, weight: 3.92 }
+                    ]
+                }
+            }
+        },
+        "zartszelveny": {
+            groupName: "Zártszelvény",
+            subProfiles: {
+                shs: {
+                    tabLabel: "Négyzet",
+                    name: "Hidegen hajlított négyzet zártszelvény",
+                    standard: "EN 10219",
+                    type: "BOX",
+                    unit: "kg/m",
+                    qtyLabel: "Szálhossz (méter):",
+                    defaultQty: 6.0,
+                    fields: [
+                        { key: 'a', label: 'Külső méret (a)', unit: 'mm' },
+                        { key: 's', label: 'Falvastagság (s)', unit: 'mm' }
+                    ],
+                    items: [
+                        { code: "20x20 x 2.0 mm", a: 20, s: 2.0, weight: 1.12 },
+                        { code: "30x30 x 2.0 mm", a: 30, s: 2.0, weight: 1.75 },
+                        { code: "40x40 x 3.0 mm", a: 40, s: 3.0, weight: 3.41 },
+                        { code: "50x50 x 3.0 mm", a: 50, s: 3.0, weight: 4.35 },
+                        { code: "80x80 x 4.0 mm", a: 80, s: 4.0, weight: 9.22 }
+                    ]
+                }
+            }
+        },
+        "otvozott": {
+            groupName: "Ötvözött",
+            subProfiles: {
+                otv_42crmo4: {
+                    tabLabel: "42CrMo4",
+                    name: "42CrMo4+QT Nemesíthető ötvözött köracél",
+                    standard: "EN 10083-3",
+                    type: "RS",
+                    unit: "kg/m",
+                    qtyLabel: "Szálhossz (méter):",
+                    defaultQty: 6.0,
+                    fields: [
+                        { key: 'd', label: 'Átmérő (d)', unit: 'mm' },
+                        { key: 'minoseg', label: 'Állapot', unit: '' }
+                    ],
+                    items: [
+                        { code: "Ø 20 mm 42CrMo4", d: 20, minoseg: "Nemesített (+QT)", weight: 2.47 },
+                        { code: "Ø 30 mm 42CrMo4", d: 30, minoseg: "Nemesített (+QT)", weight: 5.55 },
+                        { code: "Ø 40 mm 42CrMo4", d: 40, minoseg: "Nemesített (+QT)", weight: 9.87 },
+                        { code: "Ø 50 mm 42CrMo4", d: 50, minoseg: "Nemesített (+QT)", weight: 15.41 }
+                    ]
+                }
+            }
+        }
+    };
+
+    // ===== Többnyelvűség (HU / DE / EN) =====
+    const i18n = {
+        hu: {
+            title: "tk accelis Materials Hungary Zrt. | Mobil Acélkatalógus & Súlykalibrátor",
+            subtitle: "Mobil Súlykalibrátor", badge: "PRO mobil verzió",
+            sizeSelector: "Méretválasztó:", dimensions: "Méretek (Ablakok)",
+            weight: "Kereskedelmi Súly", area: "Keresztmetszet (F)", condition: "Állapot", standardCond: "Szabványos",
+            qtyLabel: "Szálhossz (méter):", total: "Össztömeg:",
+            database: "Adatbázis", search: "Keresés...",
+            thGroup: "Főcsoport", thProduct: "Termék", thStandard: "Szabvány", thSize: "Méret", thWeight: "Súly",
+            caption: "méretarányos szelvényrajz"
+        },
+        de: {
+            title: "tk accelis Materials Hungary Zrt. | Mobiler Stahlkatalog & Gewichtsrechner",
+            subtitle: "Mobiler Gewichtsrechner", badge: "PRO Mobilversion",
+            sizeSelector: "Größenauswahl:", dimensions: "Abmessungen",
+            weight: "Handelsgewicht", area: "Querschnittsfläche (A)", condition: "Zustand", standardCond: "Normgerecht",
+            qtyLabel: "Stablänge (Meter):", total: "Gesamtgewicht:",
+            database: "Datenbank", search: "Suchen...",
+            thGroup: "Gruppe", thProduct: "Produkt", thStandard: "Norm", thSize: "Abmessung", thWeight: "Gewicht",
+            caption: "maßstäblicher Querschnitt"
+        },
+        en: {
+            title: "tk accelis Materials Hungary Zrt. | Mobile Steel Catalogue & Weight Calculator",
+            subtitle: "Mobile Weight Calculator", badge: "PRO mobile version",
+            sizeSelector: "Size selector:", dimensions: "Dimensions",
+            weight: "Nominal weight", area: "Cross-sectional area (A)", condition: "Condition", standardCond: "Standard",
+            qtyLabel: "Bar length (metres):", total: "Total weight:",
+            database: "Database", search: "Search...",
+            thGroup: "Group", thProduct: "Product", thStandard: "Standard", thSize: "Size", thWeight: "Weight",
+            caption: "to-scale cross-section"
+        }
+    };
+
+    // Főcsoport-, fül- és termékneveknek fordításai (a magyar a catalogData-ban van)
+    const groupNames = {
+        tartok:       { de: "Träger",       en: "Beams" },
+        rudak:        { de: "Stabstahl",    en: "Bars" },
+        zartszelveny: { de: "Hohlprofil",   en: "Hollow sections" },
+        otvozott:     { de: "Legiert",      en: "Alloy steel" }
+    };
+    const subNames = {
+        unp:   { de: ["UNP U-Stahl", "UNP Warmgewalzter U-Stahl (geneigte Flansche)"],          en: ["UNP Channel", "UNP Hot-rolled channel (tapered flanges)"] },
+        inp:   { de: ["INP Träger",  "INP Schmaler I-Träger (geneigte Flansche)"],              en: ["INP Beam", "INP Narrow I-beam (tapered flanges)"] },
+        ipe:   { de: ["IPE Träger",  "IPE I-Träger (parallele Flansche)"],                      en: ["IPE Beam", "IPE I-beam (parallel flanges)"] },
+        hea:   { de: ["HEA Träger",  "HEA Breitflanschträger (leichte Reihe)"],                 en: ["HEA Beam", "HEA Wide-flange beam (light series)"] },
+        heb:   { de: ["HEB Träger",  "HEB Breitflanschträger (Normalreihe)"],                   en: ["HEB Beam", "HEB Wide-flange beam (standard series)"] },
+        hem:   { de: ["HEM Träger",  "HEM Breitflanschträger (verstärkte Reihe)"],              en: ["HEM Beam", "HEM Wide-flange beam (heavy series)"] },
+        kor:   { de: ["Rundstahl",   "Warmgewalzter Rundstahl"],                                en: ["Round bar", "Hot-rolled round bar"] },
+        lapos: { de: ["Flachstahl",  "Warmgewalzter Flachstahl"],                               en: ["Flat bar", "Hot-rolled flat bar"] },
+        shs:   { de: ["Quadratrohr", "Kaltgefertigtes quadratisches Hohlprofil"],               en: ["Square (SHS)", "Cold-formed square hollow section"] },
+        otv_42crmo4: { de: ["42CrMo4", "42CrMo4+QT Vergütungsstahl, rund"],                    en: ["42CrMo4", "42CrMo4+QT Quenched & tempered alloy round bar"] }
+    };
+    const fieldNames = {
+        "Magasság (h)":        { de: "Höhe (h)",              en: "Height (h)" },
+        "Talpszélesség (b)":   { de: "Flanschbreite (b)",     en: "Flange width (b)" },
+        "Gerincvastagság (s)": { de: "Stegdicke (s)",         en: "Web thickness (s)" },
+        "Talpvastagság (t)":   { de: "Flanschdicke (t)",      en: "Flange thickness (t)" },
+        "Átmérő (d)":          { de: "Durchmesser (d)",       en: "Diameter (d)" },
+        "Keresztmetszet (F)":  { de: "Querschnitt (A)",       en: "Area (A)" },
+        "Szélesség (a)":       { de: "Breite (a)",            en: "Width (a)" },
+        "Vastagság (b)":       { de: "Dicke (b)",             en: "Thickness (b)" },
+        "Külső méret (a)":     { de: "Außenmaß (a)",          en: "Outside size (a)" },
+        "Falvastagság (s)":    { de: "Wanddicke (s)",         en: "Wall thickness (s)" },
+        "Állapot":             { de: "Zustand",               en: "Condition" }
+    };
+    const valueNames = {
+        "Nemesített (+QT)": { de: "Vergütet (+QT)", en: "Quenched & tempered (+QT)" }
+    };
+
+    let currentLang = "hu";
+    try { const saved = localStorage.getItem("tkLang"); if (i18n[saved]) currentLang = saved; } catch (e) {}
+
+    const T = key => i18n[currentLang][key];
+    const tr = (map, hu) => (currentLang === "hu" || !map) ? hu : (map[currentLang] ?? hu);
+    const tGroup = (key, grp) => tr(groupNames[key], grp.groupName);
+    const tSubTab = (key, sub) => currentLang === "hu" ? sub.tabLabel : (subNames[key]?.[currentLang]?.[0] ?? sub.tabLabel);
+    const tSubName = (key, sub) => currentLang === "hu" ? sub.name : (subNames[key]?.[currentLang]?.[1] ?? sub.name);
+    const tCode = code => {
+        if (currentLang === "hu") return code;
+        const d = { de: { "Kör": "Rund", "Lapos": "Flach" }, en: { "Kör": "Round", "Lapos": "Flat" } }[currentLang];
+        return code.replace(/^(Kör|Lapos)\b/, m => d[m]);
+    };
+    // Tizedesjel: HU/DE vessző, EN pont
+    const num = (n, dec) => {
+        const s = dec === undefined ? String(n) : n.toFixed(dec);
+        return currentLang === "en" ? s : s.replace('.', ',');
+    };
+
+    function setLanguage(lang) {
+        currentLang = lang;
+        try { localStorage.setItem("tkLang", lang); } catch (e) {}
+        applyStaticTexts();
+        renderGroupTabs();
+        loadSubTabs();
+        const qty = document.getElementById("lengthInput").value;
+        loadProfile(currentGroupKey, currentSubKey, currentIndex);
+        document.getElementById("lengthInput").value = qty;   // a beírt hossz megmarad
+        calculateSubtotal();
+        buildMasterTable();
+        filterMasterTable();
+    }
+
+    function applyStaticTexts() {
+        document.documentElement.lang = currentLang;
+        document.title = T("title");
+        document.querySelectorAll("[data-i18n]").forEach(el => el.innerText = T(el.dataset.i18n));
+        document.querySelectorAll("[data-i18n-ph]").forEach(el => el.placeholder = T(el.dataset.i18nPh));
+        document.querySelectorAll("#langSwitch button").forEach(b => b.classList.toggle("active", b.dataset.lang === currentLang));
+    }
+
+    let currentGroupKey = "tartok";
+    let currentSubKey = "unp";
+    let currentIndex = 0;
+
+    function init() {
+        document.querySelectorAll("#langSwitch button").forEach(b => b.onclick = () => setLanguage(b.dataset.lang));
+        applyStaticTexts();
+        renderGroupTabs();
+        loadSubTabs();
+        loadProfile(currentGroupKey, currentSubKey, 0);
+        buildMasterTable();
+    }
+
+    function renderGroupTabs() {
+        const container = document.getElementById("groupTabs");
+        container.innerHTML = "";
+        for (const [key, grp] of Object.entries(catalogData)) {
+            const btn = document.createElement("button");
+            btn.className = `group-btn ${key === currentGroupKey ? 'active' : ''}`;
+            btn.innerText = tGroup(key, grp);
+            btn.onclick = () => switchGroup(key);
+            container.appendChild(btn);
+        }
+    }
+
+    function switchGroup(groupKey) {
+        currentGroupKey = groupKey;
+        const subKeys = Object.keys(catalogData[groupKey].subProfiles);
+        currentSubKey = subKeys[0];
+        currentIndex = 0;
+        renderGroupTabs();
+        loadSubTabs();
+        loadProfile(currentGroupKey, currentSubKey, 0);
+    }
+
+    function loadSubTabs() {
+        const container = document.getElementById("subTabs");
+        container.innerHTML = "";
+        const subProfiles = catalogData[currentGroupKey].subProfiles;
+        for (const [key, sub] of Object.entries(subProfiles)) {
+            const btn = document.createElement("button");
+            btn.className = `tab-btn ${key === currentSubKey ? 'active' : ''}`;
+            btn.innerText = tSubTab(key, sub);
+            btn.onclick = () => switchSub(key);
+            container.appendChild(btn);
+        }
+    }
+
+    function switchSub(subKey) {
+        currentSubKey = subKey;
+        currentIndex = 0;
+        loadSubTabs();
+        loadProfile(currentGroupKey, subKey, 0);
+    }
+
+    function loadProfile(groupKey, subKey, index) {
+        const sub = catalogData[groupKey].subProfiles[subKey];
+        currentIndex = index;
+
+        document.getElementById("devProfileName").innerText = tSubName(subKey, sub);
+        document.getElementById("devStandard").innerText = sub.standard;
+        document.getElementById("calcQtyLabel").innerText = T("qtyLabel");
+        document.getElementById("lengthInput").value = sub.defaultQty || 6.0;
+
+        const slider = document.getElementById("profileSlider");
+        slider.min = 0;
+        slider.max = sub.items.length - 1;
+        slider.value = index;
+
+        const ticks = document.getElementById("sliderTicks");
+        ticks.innerHTML = "";
+        sub.items.forEach((item, idx) => {
+            const span = document.createElement("span");
+            const m = item.code.match(/\d+(\.\d+)?/);
+            span.innerText = m ? m[0] : item.code;
+            span.style.cursor = "pointer";
+            span.onclick = () => { slider.value = idx; onSliderMove(idx); };
+            ticks.appendChild(span);
+        });
+
+        renderCurrentItem();
+    }
+
+    function onSliderMove(val) {
+        currentIndex = parseInt(val, 10);
+        renderCurrentItem();
+    }
+
+    function renderCurrentItem() {
+        const sub = catalogData[currentGroupKey].subProfiles[currentSubKey];
+        const item = sub.items[currentIndex];
+        const unit = sub.unit || "kg/m";
+
+        document.getElementById("sliderCurrentLabel").innerText = tCode(item.code);
+        document.getElementById("weightDisplay").innerHTML = `${num(item.weight, 2)} <span style="font-size:12px; font-weight:normal; color:var(--tk-active-green);">${unit}</span>`;
+
+        if (item.F) {
+            document.getElementById("secondMetricLabel").innerText = T("area");
+            document.getElementById("areaDisplay").innerHTML = `${num(item.F, 2)} <span style="font-size:10px; font-weight:normal; color:var(--tk-warm-muted);">cm²</span>`;
+        } else {
+            document.getElementById("secondMetricLabel").innerText = T("condition");
+            document.getElementById("areaDisplay").innerHTML = `<span style="font-size:13px; color:var(--tk-active-green);">${item.minoseg ? tr(valueNames[item.minoseg], item.minoseg) : T('standardCond')}</span>`;
+        }
+
+        const slotsGrid = document.getElementById("slotsGrid");
+        slotsGrid.innerHTML = "";
+
+        sub.fields.forEach(f => {
+            const val = item[f.key];
+            if (val !== undefined) {
+                const div = document.createElement("div");
+                div.className = "slot-item";
+                div.innerHTML = `
+                    <div style="font-size:10px; font-weight:600; color:var(--tk-warm-muted);">${tr(fieldNames[f.label], f.label)}</div>
+                    <div class="cutout-window">${typeof val === "number" ? num(val) : tr(valueNames[val], val)} <span style="font-size:9px; font-weight:500; color:var(--tk-warm-muted);">${f.unit}</span></div>
+                `;
+                slotsGrid.appendChild(div);
+            }
+        });
+
+        drawSvgProfile(sub.type, item);
+        calculateSubtotal();
+    }
+
+    // Méretarányos szelvényrajz: a valós h, b, s, t (mm) értékekből számolva
+    function drawSvgProfile(type, item) {
+        const holder = document.getElementById("svgHolder");
+        const cx = 135, cy = 88, maxW = 150, maxH = 116;
+        const r2 = n => Math.round(n * 100) / 100;
+        const fmt = n => num(n);
+        const shape = `fill="url(#hatch)" stroke="#4afb86" stroke-width="1.6" stroke-linejoin="round"`;
+        const dimStyle = `stroke="#b8c4bf" stroke-width="0.8"`;
+        const txtStyle = `fill="#b8c4bf" font-size="9" font-weight="600" text-anchor="middle"`;
+
+        // Vízszintes méretvonal (felül)
+        const dimH = (x1, x2, yFrom, label) => {
+            const y = yFrom - 9;
+            return `<line x1="${x1}" y1="${yFrom - 2}" x2="${x1}" y2="${y - 3}" ${dimStyle}/>
+                    <line x1="${x2}" y1="${yFrom - 2}" x2="${x2}" y2="${y - 3}" ${dimStyle}/>
+                    <line x1="${x1}" y1="${y}" x2="${x2}" y2="${y}" ${dimStyle} marker-start="url(#arr)" marker-end="url(#arr)"/>
+                    <text x="${(x1 + x2) / 2}" y="${y - 3}" ${txtStyle}>${label}</text>`;
+        };
+        // Függőleges méretvonal (balra)
+        const dimV = (y1, y2, xFrom, label) => {
+            const x = xFrom - 10;
+            return `<line x1="${xFrom - 2}" y1="${y1}" x2="${x - 3}" y2="${y1}" ${dimStyle}/>
+                    <line x1="${xFrom - 2}" y1="${y2}" x2="${x - 3}" y2="${y2}" ${dimStyle}/>
+                    <line x1="${x}" y1="${y1}" x2="${x}" y2="${y2}" ${dimStyle} marker-start="url(#arr)" marker-end="url(#arr)"/>
+                    <text x="${x - 4}" y="${(y1 + y2) / 2}" ${txtStyle} transform="rotate(-90 ${x - 4} ${(y1 + y2) / 2})">${label}</text>`;
+        };
+
+        let body = "";
+
+        if (type === 'I' || type === 'INP' || type === 'UNP') {
+            const { h, b, s, t } = item;
+            const sc = Math.min(maxW / b, maxH / h);
+            const X = x => r2(cx + x * sc), Y = y => r2(cy + y * sc);
+            const hh = h / 2, bb = b / 2, ss = s / 2;
+            let d;
+
+            if (type === 'I') {
+                // Párhuzamos övű I-szelvény (IPE, HEA, HEB, HEM) gerinc-öv lekerekítéssel
+                const r = Math.min(2 * s, (b - s) / 4);
+                d = `M${X(-bb)},${Y(-hh)} L${X(bb)},${Y(-hh)} L${X(bb)},${Y(-hh + t)}
+                     L${X(ss + r)},${Y(-hh + t)} Q${X(ss)},${Y(-hh + t)} ${X(ss)},${Y(-hh + t + r)}
+                     L${X(ss)},${Y(hh - t - r)} Q${X(ss)},${Y(hh - t)} ${X(ss + r)},${Y(hh - t)}
+                     L${X(bb)},${Y(hh - t)} L${X(bb)},${Y(hh)} L${X(-bb)},${Y(hh)} L${X(-bb)},${Y(hh - t)}
+                     L${X(-ss - r)},${Y(hh - t)} Q${X(-ss)},${Y(hh - t)} ${X(-ss)},${Y(hh - t - r)}
+                     L${X(-ss)},${Y(-hh + t + r)} Q${X(-ss)},${Y(-hh + t)} ${X(-ss - r)},${Y(-hh + t)}
+                     L${X(-bb)},${Y(-hh + t)} Z`;
+            } else if (type === 'INP') {
+                // Lejtős övű I-szelvény, 14% belső övhajlás (t az övkinyúlás felénél)
+                const dt = 0.14 * (b - s) / 4;
+                const tTip = t - dt, tWeb = t + dt;
+                d = `M${X(-bb)},${Y(-hh)} L${X(bb)},${Y(-hh)} L${X(bb)},${Y(-hh + tTip)}
+                     L${X(ss)},${Y(-hh + tWeb)} L${X(ss)},${Y(hh - tWeb)} L${X(bb)},${Y(hh - tTip)}
+                     L${X(bb)},${Y(hh)} L${X(-bb)},${Y(hh)} L${X(-bb)},${Y(hh - tTip)}
+                     L${X(-ss)},${Y(hh - tWeb)} L${X(-ss)},${Y(-hh + tWeb)} L${X(-bb)},${Y(-hh + tTip)} Z`;
+            } else {
+                // UNP U-szelvény, 8% belső övhajlás, gerinc a bal oldalon
+                const dt = 0.08 * (b - s) / 2;
+                const tTip = t - dt, tWeb = t + dt;
+                const x0 = -bb;
+                d = `M${X(x0)},${Y(-hh)} L${X(bb)},${Y(-hh)} L${X(bb)},${Y(-hh + tTip)}
+                     L${X(x0 + s)},${Y(-hh + tWeb)} L${X(x0 + s)},${Y(hh - tWeb)} L${X(bb)},${Y(hh - tTip)}
+                     L${X(bb)},${Y(hh)} L${X(x0)},${Y(hh)} Z`;
+            }
+            body = `<path d="${d}" ${shape}/>` +
+                   dimH(X(-bb), X(bb), Y(-hh), `b = ${fmt(b)}`) +
+                   dimV(Y(-hh), Y(hh), X(-bb), `h = ${fmt(h)}`);
+
+        } else if (type === 'RS') {
+            const R = maxH / 2 - 4;
+            body = `<circle cx="${cx}" cy="${cy}" r="${R}" ${shape}/>` +
+                   `<line x1="${cx - R - 6}" y1="${cy}" x2="${cx + R + 6}" y2="${cy}" stroke="#ff8e14" stroke-width="0.7" stroke-dasharray="6 2 1 2"/>` +
+                   `<line x1="${cx}" y1="${cy - R - 2}" x2="${cx}" y2="${cy + R + 6}" stroke="#ff8e14" stroke-width="0.7" stroke-dasharray="6 2 1 2"/>` +
+                   dimH(cx - R, cx + R, cy - R, `Ø ${fmt(item.d)}`);
+
+        } else if (type === 'BOX') {
+            const sc = maxH / item.a;
+            const A = item.a * sc, S = Math.max(item.s * sc, 2);
+            const x = cx - A / 2, y = cy - A / 2;
+            body = `<rect x="${x}" y="${y}" width="${A}" height="${A}" rx="${Math.max(2 * S, 3)}" ${shape}/>` +
+                   `<rect x="${x + S}" y="${y + S}" width="${A - 2 * S}" height="${A - 2 * S}" rx="${S}" fill="#071f1a" stroke="#4afb86" stroke-width="1.2"/>` +
+                   dimH(x, x + A, y, `a = ${fmt(item.a)}`) +
+                   dimV(y, y + A, x, `a = ${fmt(item.a)}`);
+
+        } else if (type === 'FLAT') {
+            const sc = Math.min(maxW / item.a, maxH / item.b);
+            const W = item.a * sc, H = item.b * sc;
+            const x = cx - W / 2, y = cy - H / 2;
+            body = `<rect x="${x}" y="${y}" width="${W}" height="${H}" ${shape}/>` +
+                   dimH(x, x + W, y, `a = ${fmt(item.a)}`) +
+                   dimV(y, y + H, x, `b = ${fmt(item.b)}`);
+        }
+
+        holder.innerHTML = `<svg width="100%" height="100%" viewBox="0 0 240 160" preserveAspectRatio="xMidYMid meet">
+            <defs>
+                <pattern id="hatch" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+                    <rect width="6" height="6" fill="#0f3a32"/>
+                    <line x1="0" y1="0" x2="0" y2="6" stroke="#4afb86" stroke-width="1" opacity="0.55"/>
+                </pattern>
+                <marker id="arr" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse">
+                    <path d="M0,1 L10,5 L0,9 z" fill="#b8c4bf"/>
+                </marker>
+            </defs>${body}</svg>`;
+        document.getElementById("svgCaption").innerText = tCode(item.code) + " – " + T("caption");
+    }
+
+    function calculateSubtotal() {
+        const sub = catalogData[currentGroupKey].subProfiles[currentSubKey];
+        const item = sub.items[currentIndex];
+        const qty = parseFloat(document.getElementById("lengthInput").value) || 0;
+        const total = item.weight * qty;
+        document.getElementById("subtotalWeight").innerText = num(total, 2) + " kg";
+    }
+
+    function buildMasterTable() {
+        const tbody = document.getElementById("masterTableBody");
+        tbody.innerHTML = "";
+        for (const [gKey, grp] of Object.entries(catalogData)) {
+            for (const [sKey, sub] of Object.entries(grp.subProfiles)) {
+                sub.items.forEach(item => {
+                    const tr = document.createElement("tr");
+                    tr.innerHTML = `
+                        <td><b>${tGroup(gKey, grp)}</b></td>
+                        <td>${tSubTab(sKey, sub)}</td>
+                        <td style="color:var(--tk-warm-muted);">${sub.standard}</td>
+                        <td><b>${tCode(item.code)}</b></td>
+                        <td><b style="color:var(--tk-active-green);">${num(item.weight, 2)} ${sub.unit}</b></td>
+                    `;
+                    tbody.appendChild(tr);
+                });
+            }
+        }
+    }
+
+    function filterMasterTable() {
+        const query = document.getElementById("dbSearch").value.toLowerCase();
+        document.querySelectorAll("#masterTableBody tr").forEach(row => {
+            row.style.display = row.innerText.toLowerCase().includes(query) ? "" : "none";
+        });
+    }
+
+    window.onload = init;
+</script>
+</body>
+</html>
