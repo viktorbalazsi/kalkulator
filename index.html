@@ -315,6 +315,14 @@
             transition: border-color .15s;
         }
         .qty input:focus { border-color: var(--tk-active-green); }
+        .qty-row { display: flex; align-items: center; gap: 6px; }
+        .qty-row input { flex: 1; min-width: 0; text-align: right; font-variant-numeric: tabular-nums; }
+        .qty-row .step-btn { flex: none; width: 34px; height: 34px; font-size: 20px; }
+        .unit-switch { flex: none; }
+        .unit-switch button { padding: 8px 10px; font-size: 11px; }
+        .qty-hint { font-size: 11px; color: var(--tk-warm-muted); text-align: right; margin-top: 4px; min-height: 14px; font-variant-numeric: tabular-nums; }
+        .qty-hint.err { color: #ff9a9a; font-weight: 700; }
+        .qty input.err { border-color: #ff6e6e; }
         .total { font-size: 12px; font-weight: 700; margin-top: 8px; text-align: right; }
         .total-value { color: var(--tk-accent-orange); font-size: 15px; font-variant-numeric: tabular-nums; }
 
@@ -532,7 +540,16 @@
                 </div>
                 <div class="qty">
                     <label for="lengthInput" id="calcQtyLabel"></label>
-                    <input type="number" id="lengthInput" value="6.0" step="0.5" min="0.1" inputmode="decimal" oninput="calculateSubtotal()">
+                    <div class="qty-row">
+                        <button class="step-btn" type="button" aria-label="−" onclick="stepQty(-1)">−</button>
+                        <input type="text" id="lengthInput" value="6" inputmode="decimal" autocomplete="off" spellcheck="false"
+                               oninput="calculateSubtotal()" onblur="normalizeQty()" onkeydown="if(event.key==='Enter')this.blur()">
+                        <button class="step-btn" type="button" aria-label="+" onclick="stepQty(1)">+</button>
+                        <div class="lang-switch unit-switch" id="unitSwitch">
+                            <button type="button" data-u="m" onclick="setQtyUnit('m')">m</button><button type="button" data-u="mm" onclick="setQtyUnit('mm')">mm</button>
+                        </div>
+                    </div>
+                    <div class="qty-hint" id="qtyHint"></div>
                     <div class="total"><span data-i18n="total">Össztömeg:</span> <span class="total-value" id="subtotalWeight"></span></div>
                 </div>
             </div>
@@ -1949,7 +1966,7 @@
             stdLabel: "Méretek", tolLabel: "Tűrések", gradeLabel: "Minőség",
             note: "Az elméleti súlyok tájékoztató jellegűek, a forgalmazott termékek gyártástechnológiai okokból ettől eltérhetnek.",
             sizeLabel: "Táblaméret:", custom: "Egyedi méret", widthMm: "Szélesség (mm)", lengthMm: "Hosszúság (mm)",
-            qtyPieces: "Darabszám (tábla):", sheetWeight: "Elméleti tömeg / tábla", m2Weight: "Felületi tömeg", unitSheet: "kg/tábla",
+            qtyPieces: "Darabszám (tábla):", qtyLabelMm: "Szálhossz (milliméter):", invalidNum: "Érvénytelen szám", sheetWeight: "Elméleti tömeg / tábla", m2Weight: "Felületi tömeg", unitSheet: "kg/tábla",
             thickness: "Vastagság (t)", sheetW: "Szélesség", sheetL: "Hosszúság", sheetArea: "Felület",
             onlyDC01: "Ez a méret csak DC01 minőségben kapható.", onlyDX51: "Ez a méret csak DX51D+Z275 (horganyzott) minőségben kapható.",
             customNote: "Egyedi táblaméret: a tömeg számított érték, az elérhetőségről érdeklődjön kollégáinknál.",
@@ -1973,7 +1990,7 @@
             stdLabel: "Abmessungen", tolLabel: "Toleranzen", gradeLabel: "Güte",
             note: "Die theoretischen Gewichte sind Richtwerte; gelieferte Produkte können fertigungsbedingt davon abweichen.",
             sizeLabel: "Tafelformat:", custom: "Sonderformat", widthMm: "Breite (mm)", lengthMm: "Länge (mm)",
-            qtyPieces: "Stückzahl (Tafeln):", sheetWeight: "Theor. Gewicht / Tafel", m2Weight: "Flächengewicht", unitSheet: "kg/Tafel",
+            qtyPieces: "Stückzahl (Tafeln):", qtyLabelMm: "Stablänge (Millimeter):", invalidNum: "Ungültige Zahl", sheetWeight: "Theor. Gewicht / Tafel", m2Weight: "Flächengewicht", unitSheet: "kg/Tafel",
             thickness: "Dicke (t)", sheetW: "Breite", sheetL: "Länge", sheetArea: "Fläche",
             onlyDC01: "Dieses Format ist nur in DC01 lieferbar.", onlyDX51: "Dieses Format ist nur in DX51D+Z275 (verzinkt) lieferbar.",
             customNote: "Sonderformat: Gewicht berechnet – Verfügbarkeit bitte bei unseren Kollegen anfragen.",
@@ -1997,7 +2014,7 @@
             stdLabel: "Dimensions", tolLabel: "Tolerances", gradeLabel: "Grade",
             note: "Theoretical weights are for guidance only; supplied products may deviate for production reasons.",
             sizeLabel: "Sheet size:", custom: "Custom size", widthMm: "Width (mm)", lengthMm: "Length (mm)",
-            qtyPieces: "Quantity (sheets):", sheetWeight: "Theoretical weight / sheet", m2Weight: "Weight per m²", unitSheet: "kg/sheet",
+            qtyPieces: "Quantity (sheets):", qtyLabelMm: "Bar length (millimetres):", invalidNum: "Invalid number", sheetWeight: "Theoretical weight / sheet", m2Weight: "Weight per m²", unitSheet: "kg/sheet",
             thickness: "Thickness (t)", sheetW: "Width", sheetL: "Length", sheetArea: "Area",
             onlyDC01: "This size is available in DC01 only.", onlyDX51: "This size is available in DX51D+Z275 (galvanised) only.",
             customNote: "Custom size: weight is calculated – please ask our colleagues about availability.",
@@ -2108,9 +2125,9 @@
         applyStaticTexts();
         renderGroupTabs();
         loadSubTabs();
-        const qty = document.getElementById("lengthInput").value;
+        const qty = parseQty();
         loadProfile(currentGroupKey, currentSubKey, currentIndex);
-        document.getElementById("lengthInput").value = qty;   // a beírt hossz megmarad
+        if (!isNaN(qty)) document.getElementById("lengthInput").value = fmtQty(qty);   // a beírt hossz megmarad
         calculateSubtotal();
         buildMasterTable();
         filterMasterTable();
@@ -2199,9 +2216,11 @@
         currentIndex = index;
 
         document.getElementById("devProfileName").innerText = tSubName(subKey, sub);
-        document.getElementById("calcQtyLabel").innerText = T(isPlate(sub) ? "qtyPieces" : "qtyLabel");
-        document.getElementById("lengthInput").value = sub.defaultQty || 6.0;
-        document.getElementById("lengthInput").step = isPlate(sub) ? 1 : 0.5;
+        qtyIsPieces = isPlate(sub);
+        updateQtyUi();
+        // alapérték: lemeznél 1 tábla, egyébként a szokásos szálhossz (m-ben megadva, mm módban átváltva)
+        const def = sub.defaultQty || 6.0;
+        document.getElementById("lengthInput").value = fmtQty(qtyIsPieces ? def : (qtyUnit === "mm" ? def * 1000 : def));
         document.getElementById("sizePanel").hidden = !isPlate(sub);
         document.getElementById("hollowPanel").hidden = !(isHollow(sub) || isOpen(sub));
 
@@ -2764,10 +2783,63 @@
         document.getElementById("svgCaption").innerText = tCode(item.code) + " – " + T(type === "PLATE" ? "plateView" : "caption");
     }
 
+    // ===== Mennyiség / szálhossz: tetszőleges tizedes, vessző vagy pont, m vagy mm =====
+    let qtyUnit = "m", qtyIsPieces = false;
+    try { if (localStorage.getItem("tkQtyUnit") === "mm") qtyUnit = "mm"; } catch (e) {}
+
+    function parseQty() {
+        const raw = document.getElementById("lengthInput").value.replace(/\s/g, "").replace(",", ".");
+        return raw === "" || !/^\d*\.?\d*$/.test(raw) ? NaN : parseFloat(raw);
+    }
+    // legfeljebb 3 tizedes (m-ben ez 1 mm pontosság), felesleges nullák nélkül
+    const fmtQty = v => num(Math.round(v * 1000) / 1000);
+
+    function updateQtyUi() {
+        document.getElementById("unitSwitch").hidden = qtyIsPieces;
+        document.querySelectorAll("#unitSwitch button").forEach(b => b.classList.toggle("active", b.dataset.u === qtyUnit));
+        document.getElementById("calcQtyLabel").innerText =
+            T(qtyIsPieces ? "qtyPieces" : qtyUnit === "mm" ? "qtyLabelMm" : "qtyLabel");
+    }
+
+    function setQtyUnit(u) {
+        if (u === qtyUnit) return;
+        const v = parseQty();
+        qtyUnit = u;
+        try { localStorage.setItem("tkQtyUnit", u); } catch (e) {}
+        if (!isNaN(v)) document.getElementById("lengthInput").value = fmtQty(u === "mm" ? v * 1000 : v / 1000);
+        updateQtyUi();
+        calculateSubtotal();
+    }
+
+    function stepQty(d) {
+        const step = qtyIsPieces ? 1 : qtyUnit === "mm" ? 100 : 0.5;
+        const v = parseQty();
+        const base = isNaN(v) ? 0 : v;
+        // a következő kerek lépésre ugrik (pl. 6,25 → 6,5 vagy 6)
+        let next = d > 0 ? Math.floor(base / step + 1e-9) * step + step : Math.ceil(base / step - 1e-9) * step - step;
+        next = Math.max(qtyIsPieces ? 1 : step, next);
+        document.getElementById("lengthInput").value = fmtQty(next);
+        calculateSubtotal();
+    }
+
+    function normalizeQty() {
+        const v = parseQty();
+        if (!isNaN(v)) document.getElementById("lengthInput").value = fmtQty(v);
+    }
+
     function calculateSubtotal() {
-        const qty = parseFloat(document.getElementById("lengthInput").value) || 0;
-        const total = currentWeight * qty;
-        document.getElementById("subtotalWeight").innerText = num(total, 2) + " kg";
+        const input = document.getElementById("lengthInput"), hint = document.getElementById("qtyHint");
+        const v = parseQty();
+        const bad = isNaN(v) || v < 0;
+        input.classList.toggle("err", bad);
+        hint.classList.toggle("err", bad);
+        const qty = bad ? 0 : (qtyIsPieces ? v : qtyUnit === "mm" ? v / 1000 : v);   // métert / darabot számolunk
+        if (bad) hint.innerText = T("invalidNum");
+        else if (qtyIsPieces) hint.innerText = "";
+        else hint.innerText = qtyUnit === "mm"
+            ? `= ${num(Math.round(qty * 1000) / 1000)} m`
+            : `= ${String(Math.round(qty * 1000)).replace(/\B(?=(\d{3})+(?!\d))/g, { hu: " ", de: ".", en: "," }[currentLang])} mm`;
+        document.getElementById("subtotalWeight").innerText = num(currentWeight * qty, 2) + " kg";
     }
 
     // A táblázat egyetlen HTML-szövegként épül (több ezer sornál ez sokkal gyorsabb),
